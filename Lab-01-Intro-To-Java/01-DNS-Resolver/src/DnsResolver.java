@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class DnsResolver {
     public static String resolve(String[] from, String[] to, String start) {
         int startIndex = 0;
@@ -16,50 +18,32 @@ public class DnsResolver {
         }
 
         String result = to[startIndex];
+        String[] sources = new String[]{start};
 
         for (int i = 0; i < from.length; i++) {
             for (int j = 0; j < from.length; j++) {
-                if (from[j].equals(result) && from[j].equals(to[j])) {
-                    return null;
-                }
-
                 if (from[j].equals(result)) {
-                    result = to[j];
-                }
-
-                for (int k = startIndex; k < from.length; j++) {
-                    if (to[j].equals(from[k])) {
-                        if (j != startIndex && !from[j].equals(to[j - 1])) {
-                            continue;
-                        }
+                    if (from[j].equals(to[j])) {
                         return null;
                     }
+
+                    for (int k = 0; k < j; k++) {
+                        if (to[j].equals(from[k])) {
+                            for (String source : sources) {
+                                if (source.equals(from[k])) {
+                                    return null;
+                                }
+                            }
+                        }
+                    }
+
+                    result = to[j];
+                    sources = Arrays.copyOf(sources, sources.length + 1);
+                    sources[sources.length - 1] = from[j];
+                    break;
                 }
             }
         }
-
-//        String result = "";
-//
-//        for (int i = startIndex; i < from.length; i++) {
-//            if (i != startIndex && !from[i].equals(result)) {
-//                continue;
-//            }
-//
-//            if (from[i].equals(to[i])) {
-//                return null;
-//            }
-//
-//            for (int j = startIndex; j < i; j++) {
-//                if (to[i].equals(from[j])) {
-//                    if(j != startIndex && !from[j].equals(to[j-1])){
-//                        continue;
-//                    }
-//                    return null;
-//                }
-//            }
-//
-//            result = to[i];
-//        }
 
         return result;
     }
